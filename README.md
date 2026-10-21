@@ -11,13 +11,14 @@ ydir is a simple and easy to use filemanager
 ## Usage
 copy plugin into `.config/micro/plug/ydir/`
 restart micro
+
 ctrl+e `ydir tab` to open ydir in a new tab
 
 all possible options:
-    - `ydir current` save current buffer and open ydir in it (saving can be disabled)
-    - `ydir hsplit` 
-    - `ydir vsplit`
-    - `ydir tab`
+ - `ydir current` save current buffer and open ydir in it (saving can be disabled)
+ - `ydir hsplit` 
+ - `ydir vsplit`
+ - `ydir tab`
 
 See configure to know how to bind this
 
