@@ -205,7 +205,9 @@ local function create_path(base, rel_path) -- bool
 	local path = filepath.Join(base, rel_path)
 	local is_dir = rel_path:sub(-1) == "/"
 	
-    local dir = filepath.Dir(path)
+	local dir = path
+	if not is_dir then dir = filepath.Dir(path) end	
+	
     local err = os.MkdirAll(dir, 493) -- 493 = 0755
     if err ~= nil then
   	    micro.InfoBar():Error(err)
@@ -788,7 +790,7 @@ function ydir_create_path(bp) -- bool
         if canceled then return end
         if resp == "" then return end
         local current_path = get_current_dir(bp)
-	    local rel = filepath.ToSlash(filepath.Clean(resp))
+	    local rel = filepath.ToSlash(resp)
      	create_path(current_path, rel)
 
         local line = bp.Cursor.Y
