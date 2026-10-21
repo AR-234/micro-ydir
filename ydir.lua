@@ -598,7 +598,15 @@ local function unmark_line_selected(bp, y) -- bool
 	return true
 end -- unmark_line_selected
 
-function ydir_smart_mark() -- nil
+local function toggle_selection(bp, y) -- nil
+	if is_line_selected(bp, y) then
+		unmark_line_selected(bp, y)
+	else
+		mark_line_selected(bp, y)
+	end
+end -- toggle_selection
+
+function ydir_smart_mark(bp) -- nil
 	if not bp.Cursor:HasSelection() then
 		local y = bp.Cursor.Y
 		toggle_selection(bp, y)
@@ -1059,4 +1067,3 @@ function init() -- nil
     config.RegisterCommonOption("ydir", "Nerdfont", false)
     config.RegisterCommonOption("ydir", "NerdfontIconSelect", false)
 end -- init
-
