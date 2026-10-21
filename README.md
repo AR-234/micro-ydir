@@ -37,11 +37,11 @@ for smaller keyboard layouts other keys for these actions need to be binded, see
 `"F1": "command:ydir",`
 
 all ydir options:
-    - `ydir` will open the option set iun ydir.Default (see below)
-    - `ydir current` save current buffer and open ydir in it (saving can be disabled)
-    - `ydir hsplit` 
-    - `ydir vsplit`
-    - `ydir tab`
+ - `ydir` will open the option set iun ydir.Default (see below)
+ - `ydir current` save current buffer and open ydir in it (saving can be disabled)
+ - `ydir hsplit` 
+ - `ydir vsplit`
+ - `ydir tab`
 
 Other commands you can bind to easily:
  - `command:ydir_open_cursor` opens selected file/directory on cursor
