@@ -9,10 +9,14 @@ ydir is a simple and easy to use filemanager
 - Copy/Cut/Paste of files within ydir
 
 ## Usage
-copy plugin into `.config/micro/plug/ydir/`
+
+Install with:
+
+`git clone https://github.com/AR-234/micro-ydir.git ~/.config/micro/plug/ydir`
+
 restart micro
 
-ctrl+e `ydir tab` to open ydir in a new tab
+ctrl+e `ydir` to open ydir in the current pane (this is the default can be changed in config)
 
 all possible options:
  - `ydir current` save current buffer and open ydir in it (saving can be disabled)
