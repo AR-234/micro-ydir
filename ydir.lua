@@ -843,7 +843,7 @@ function ydir_delete_selection(bp) -- bool
 		    end
 		    local delete_err = os.RemoveAll(path)
 		    if delete_err ~= nil then
-	    		micro.InfoBar():Error("Delete failed: " .. tostring(rerr))
+	    		micro.InfoBar():Error("Delete failed: " .. delete_err:Error())
 	            return
 	       	end
 	    end
