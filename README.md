@@ -90,5 +90,11 @@ for easier mouse movement rightclick could be binded `"MouseRight": "lua:ydir.Mo
     
 ## Contribution
 Got ideas or even found a bug, feel free to open an Issue
+This project used https://teal-language.org/!
+Changes are made to ydir.tl, ydir.lua is generated from ydir.tl, dont make manual changes to ydir.lua
+
+`tl check ydir.tl` to check syntax
+
+`tl gen ydir.tl` to generate ydir.lua
 
 *mileage may vary; these are my personal defaults
