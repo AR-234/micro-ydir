@@ -165,6 +165,9 @@ local function copy_single(src: string, dst: string): string
 	input:Close()
 	if cerr ~= nil then return cerr:Error() end
 	err = output:Close()
+	if err == nil then
+		return nil
+	end
 	return err:Error()
 end -- copy_single
 
@@ -964,6 +967,12 @@ global function prePaste(bp: MicroBufPane): boolean
 	ydir_paste(bp)
 	return false
 end -- prePaste
+
+global function preCut(bp:MicroBufPane): boolean
+	if not is_ydir_buffer(bp) then return true end
+	ydir_cut(bp)
+	return false
+end
 
 global function preCutLine(bp: MicroBufPane): boolean
 	if not is_ydir_buffer(bp) then return true end

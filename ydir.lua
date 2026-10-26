@@ -165,6 +165,9 @@ local function copy_single(src, dst)
    input:Close()
    if cerr ~= nil then return cerr:Error() end
    err = output:Close()
+   if err == nil then
+      return nil
+   end
    return err:Error()
 end
 
@@ -962,6 +965,12 @@ end
 function prePaste(bp)
    if not is_ydir_buffer(bp) then return true end
    ydir_paste(bp)
+   return false
+end
+
+function preCut(bp)
+   if not is_ydir_buffer(bp) then return true end
+   ydir_cut(bp)
    return false
 end
 
