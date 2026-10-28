@@ -877,13 +877,17 @@ function ydir_delete_selection(bp)
 end
 
 function ydir_cursor_start(bp)
+   if not is_ydir_buffer(bp) then return true end
    set_cursor_to_idx(bp, 0)
+   return false
 end
 
 function ydir_cursor_end(bp)
+   if not is_ydir_buffer(bp) then return true end
    local last_line = bp.Buf:LinesNum() - 1
    local last_idx = last_line - YDIR_LISTING_START
    set_cursor_to_idx(bp, last_idx)
+   return false
 end
 
 
@@ -941,15 +945,11 @@ function preCursorRight(bp)
 end
 
 function preCursorStart(bp)
-   if not is_ydir_buffer(bp) then return true end
-   ydir_cursor_start(bp)
-   return false
+   return ydir_cursor_start(bp)
 end
 
 function preCursorEnd(bp)
-   if not is_ydir_buffer(bp) then return true end
-   ydir_cursor_end(bp)
-   return false
+   return ydir_cursor_end(bp)
 end
 
 function preIndentSelection(bp)

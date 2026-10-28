@@ -877,13 +877,17 @@ global function ydir_delete_selection(bp: MicroBufPane): boolean
 end -- ydir_delete_selection
 
 global function ydir_cursor_start(bp: MicroBufPane)
+	if not is_ydir_buffer(bp) then return true end
 	set_cursor_to_idx(bp, 0)
+	return false
 end -- ydir_cursor_start
 
 global function ydir_cursor_end(bp: MicroBufPane)
+	if not is_ydir_buffer(bp) then return true end
 	local last_line = bp.Buf:LinesNum()-1
 	local last_idx = last_line-YDIR_LISTING_START
-	set_cursor_to_idx(bp, last_idx)	
+	set_cursor_to_idx(bp, last_idx)
+	return false
 end -- ydir_cursor_end
 
 --
@@ -941,15 +945,11 @@ global function preCursorRight(bp: MicroBufPane): boolean
 end -- preCursorRight
 
 global function preCursorStart(bp: MicroBufPane): boolean
-	if not is_ydir_buffer(bp) then return true end
-	ydir_cursor_start(bp)	
-	return false
+	return ydir_cursor_start(bp)
 end -- preCursorStart
 
 global function preCursorEnd(bp: MicroBufPane): boolean
-	if not is_ydir_buffer(bp) then return true end
-	ydir_cursor_end(bp)
-	return false
+	return ydir_cursor_end(bp)
 end -- preCursorEnd
 
 global function preIndentSelection(bp: MicroBufPane): boolean
