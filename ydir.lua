@@ -375,7 +375,7 @@ local function path_to_position(base, entries, path)
    return nil
 end
 
-function ydir_file_name_start()
+function ydir_attribute_end()
    local hide_date = config.GetGlobalOption("ydir.HideDate")
    local hide_perm = config.GetGlobalOption("ydir.HidePermission")
    local hide_size = config.GetGlobalOption("ydir.HideSize")
@@ -395,9 +395,6 @@ function ydir_file_name_start()
       width = width + 10
       width = width + 2
    end
-   if has_nerdfont then
-      width = width + 4
-   end
 
    return width
 end
@@ -412,16 +409,12 @@ local function set_cursor_to_idx(bp, idx)
    local has_nerd = config.GetGlobalOption("ydir.Nerdfont")
    local nerd_select = config.GetGlobalOption("ydir.NerdfontIconSelect")
    local offset = 0
-   if has_nerd then
-      if nerd_select then
-         offset = 4
-      else
-         offset = 2
-      end
+   if has_nerd and not nerd_select then
+      offset = 2
    end
 
 
-   bp.Cursor:GotoLoc(buffer.Loc(ydir_file_name_start() - offset, YDIR_LISTING_START - 1 + idx))
+   bp.Cursor:GotoLoc(buffer.Loc(ydir_attribute_end() + offset, YDIR_LISTING_START - 1 + idx))
    bp:Relocate()
 end
 
@@ -552,9 +545,14 @@ local function get_file_name_by_line(bp, y)
    if y < YDIR_LISTING_START - 1 then return nil end
    if y > bp.Buf:LinesNum() - 1 then return nil end
    local line = bp.Buf:Line(y)
-   local start = ydir_file_name_start()
-   if #line <= start then return nil end
-   return line:sub(start + 1)
+   local start = ydir_attribute_end() + 1
+   local has_nerdfont = config.GetGlobalOption("ydir.Nerdfont")
+   if has_nerdfont then
+      local icon_width = line:sub(start):find(" ", 1, true)
+      start = start + icon_width
+   end
+
+   return line:sub(start)
 end
 
 local function get_file_name_on_cursor(bp)
@@ -877,17 +875,13 @@ function ydir_delete_selection(bp)
 end
 
 function ydir_cursor_start(bp)
-   if not is_ydir_buffer(bp) then return true end
    set_cursor_to_idx(bp, 0)
-   return false
 end
 
 function ydir_cursor_end(bp)
-   if not is_ydir_buffer(bp) then return true end
    local last_line = bp.Buf:LinesNum() - 1
    local last_idx = last_line - YDIR_LISTING_START
    set_cursor_to_idx(bp, last_idx)
-   return false
 end
 
 
@@ -945,11 +939,15 @@ function preCursorRight(bp)
 end
 
 function preCursorStart(bp)
-   return ydir_cursor_start(bp)
+   if not is_ydir_buffer(bp) then return true end
+   ydir_cursor_start(bp)
+   return false
 end
 
 function preCursorEnd(bp)
-   return ydir_cursor_end(bp)
+   if not is_ydir_buffer(bp) then return true end
+   ydir_cursor_end(bp)
+   return false
 end
 
 function preIndentSelection(bp)

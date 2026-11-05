@@ -375,7 +375,7 @@ local function path_to_position(base: string, entries: {string}, path: string): 
 	return nil
 end -- path_to_position
 
-global function ydir_file_name_start(): integer
+global function ydir_attribute_end(): integer
 	local hide_date = config.GetGlobalOption("ydir.HideDate")
 	local hide_perm = config.GetGlobalOption("ydir.HidePermission")
 	local hide_size = config.GetGlobalOption("ydir.HideSize")
@@ -395,12 +395,9 @@ global function ydir_file_name_start(): integer
 		width = width + 10   -- Perm
 		width = width +  2   -- Spacing
 	end
-	if has_nerdfont then
-		width = width + 4
-	end
 	
 	return width
-end -- ydir_file_name_start
+end -- ydir_attribute_end
 
 local function set_cursor_to_idx(bp: MicroBufPane, idx: integer)
 	if idx == nil then idx = 0 end
@@ -412,16 +409,12 @@ local function set_cursor_to_idx(bp: MicroBufPane, idx: integer)
 	local has_nerd    = config.GetGlobalOption("ydir.Nerdfont")
 	local nerd_select = config.GetGlobalOption("ydir.NerdfontIconSelect")
 	local offset = 0
-	if has_nerd then
-		if nerd_select then
-			offset = 4
-		else
-			offset = 2
-		end
+	if has_nerd and not nerd_select then
+		offset = 2
 	end
 	
 	-- Set cursor to the selection
-	bp.Cursor:GotoLoc(buffer.Loc(ydir_file_name_start()-offset, YDIR_LISTING_START - 1 + idx))
+	bp.Cursor:GotoLoc(buffer.Loc(ydir_attribute_end()+offset, YDIR_LISTING_START - 1 + idx))
 	bp:Relocate()
 end -- set_cursor_to_idx
 
@@ -552,9 +545,14 @@ local function get_file_name_by_line(bp: MicroBufPane, y: integer): string
 	if y < YDIR_LISTING_START-1 then return nil end
 	if y > bp.Buf:LinesNum()-1  then return nil end
 	local line = bp.Buf:Line(y)
-	local start = ydir_file_name_start()
-	if #line <= start then return nil end
-	return line:sub(start+1)
+	local start = ydir_attribute_end() + 1 -- skip spacing
+	local has_nerdfont = config.GetGlobalOption("ydir.Nerdfont")
+	if has_nerdfont then
+		local icon_width = line:sub(start):find(" ", 1, true)
+		start = start + icon_width
+	end
+	-- if #line <= start then return nil end
+	return line:sub(start)
 end -- get_file_name_by_line
 
 local function get_file_name_on_cursor(bp: MicroBufPane): string
@@ -877,17 +875,13 @@ global function ydir_delete_selection(bp: MicroBufPane): boolean
 end -- ydir_delete_selection
 
 global function ydir_cursor_start(bp: MicroBufPane)
-	if not is_ydir_buffer(bp) then return true end
 	set_cursor_to_idx(bp, 0)
-	return false
 end -- ydir_cursor_start
 
 global function ydir_cursor_end(bp: MicroBufPane)
-	if not is_ydir_buffer(bp) then return true end
 	local last_line = bp.Buf:LinesNum()-1
 	local last_idx = last_line-YDIR_LISTING_START
-	set_cursor_to_idx(bp, last_idx)
-	return false
+	set_cursor_to_idx(bp, last_idx)	
 end -- ydir_cursor_end
 
 --
@@ -945,11 +939,15 @@ global function preCursorRight(bp: MicroBufPane): boolean
 end -- preCursorRight
 
 global function preCursorStart(bp: MicroBufPane): boolean
-	return ydir_cursor_start(bp)
+	if not is_ydir_buffer(bp) then return true end
+	ydir_cursor_start(bp)	
+	return false
 end -- preCursorStart
 
 global function preCursorEnd(bp: MicroBufPane): boolean
-	return ydir_cursor_end(bp)
+	if not is_ydir_buffer(bp) then return true end
+	ydir_cursor_end(bp)
+	return false
 end -- preCursorEnd
 
 global function preIndentSelection(bp: MicroBufPane): boolean
